@@ -13,9 +13,6 @@ import java.util.List;
 @Repository
 @EnableTransactionManagement
 public interface PostRepository extends JpaRepository<Post,Integer> {
-//    @Query(value = "SELECT p FROM Post p ORDER BY p.postId DESC LIMIT 1",nativeQuery = true)
-//    Post findCreatedPost();
-
     Page<Post> findAllByOrderByCreatedDateDesc(Pageable pageable);
 
     Post findFirstByOrderByCreatedDateDesc();

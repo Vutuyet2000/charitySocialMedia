@@ -27,10 +27,10 @@ public class PostController {
     @Autowired
     private PostAuctionService postAuctionService;
 
-    //lam get /post?page
+    //lam get /post?page={pageNumber}
     @GetMapping("/post")
-    public List<Post> getAllPosts(){
-        Page<Post> page = postService.getAllPosts();
+    public List<Post> getAllPosts(@RequestParam("page") int currentPage){
+        Page<Post> page = postService.getAllPosts(currentPage);
         List<Post> list = page.getContent();
         return list;
     }
@@ -59,7 +59,7 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //validation object va tra response thich hop cho nhung phuong thuc cos @Valid
+    //validation object va tra response thich hop cho nhung phuong thuc co @Valid
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

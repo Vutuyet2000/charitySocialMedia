@@ -7,6 +7,8 @@ import javafx.geometry.Pos;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,12 +23,16 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotEmpty(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
+    @Pattern(regexp = "^[\\w+_-]+@((\\w+\\.\\w+)+)$",message = "Email is invalid")
     private String email;
 
-    private RoleEnum role=RoleEnum.ROLE_USER;
+    //=RoleEnum.ROLE_USER
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
 //    @Column(name = "is_staff")
 //    private boolean isStaff = false;
@@ -60,6 +66,15 @@ public class User implements Serializable {
     //like
     @OneToMany(mappedBy = "user")
     private List<Like> likes;
+
+    public User(){}
+
+    public User(String username, String password, String email, String avatar){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.avatar = avatar;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -117,6 +132,7 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
+    @JsonIgnore
     public List<Report> getReporterReports() {
         return reporterReports;
     }
@@ -125,6 +141,7 @@ public class User implements Serializable {
         this.reporterReports = reporterReports;
     }
 
+    @JsonIgnore
     public List<Report> getReportedReports() {
         return reportedReports;
     }

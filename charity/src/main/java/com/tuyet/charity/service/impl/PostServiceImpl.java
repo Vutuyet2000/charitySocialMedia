@@ -26,9 +26,9 @@ public class PostServiceImpl implements PostService {
     private PostCustomRepository postCustomRepository;
 
     @Override
-    public Page<Post> getAllPosts() {
+    public Page<Post> getAllPosts(int currentPage) {
         //tham số đầu tiên chỉ định trang có index bắt đầu bằng mấy
-        Pageable pageable = PageRequest.of(0,30);
+        Pageable pageable = PageRequest.of(currentPage-1,30);
         return postRepository.findAllByOrderByCreatedDateDesc(pageable);
     }
 

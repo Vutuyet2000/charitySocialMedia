@@ -12,16 +12,6 @@ public enum RoleEnum {
         this.type = s;
     }
 
-//    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-//    public static RoleEnum getEnumFromValue(@JsonProperty("role") String value) {
-//        for (RoleEnum enumRole : RoleEnum.values()) {
-//            if (enumRole.name().equals(value)) {
-//                return enumRole;
-//            }
-//        }
-//        throw new IllegalArgumentException();
-//    }
-
     @JsonValue
     public String getHashTagEnum(){
         return type;

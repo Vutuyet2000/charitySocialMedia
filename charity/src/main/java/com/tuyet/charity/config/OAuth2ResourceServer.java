@@ -20,7 +20,7 @@ public class OAuth2ResourceServer extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception {
         http.anonymous().disable()
             .authorizeRequests()
-            .antMatchers("/class/**").authenticated()
+            .antMatchers("/users/**").authenticated()
             .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }
 }

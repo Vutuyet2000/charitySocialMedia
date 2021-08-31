@@ -39,12 +39,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(User user) {
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRole(RoleEnum.ROLE_USER);
+        if (user.getRole()==null)
+            user.setRole(RoleEnum.ROLE_USER);
         userRepository.save(user);
     }
 
     @Override
     public List<User> getUsers(String username) {
         return userRepository.findAllByUsername(username);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getCurrentUser(String username) {
+        return userRepository.findOneByUsername(username);
     }
 }
