@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "post")
@@ -27,9 +29,11 @@ public class Post implements Serializable {
     @Column(name = "created_date", nullable = true)
     private Date createdDate = new Date(System.currentTimeMillis());
 
+    @ElementCollection(targetClass = HashTagEnum.class)
+    @CollectionTable(name = "post_hashTag", joinColumns = @JoinColumn(name = "post_id"))
     @Enumerated(EnumType.STRING)
     @Column(name="hash_tag")
-    private HashTagEnum hashTag;
+    private Set<HashTagEnum> hashTag = new HashSet<>();
 
     //ManyToOne: user
     @ManyToOne
@@ -53,6 +57,15 @@ public class Post implements Serializable {
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn //The PrimaryKeyJoinColumn annotation specifies a primary key column that is used as a foreign key to join to another table.
     private PostAuction postAuction;
+
+//    public Post(){}
+//
+//    public Post(String content, String image, Date createdDate, HashTagEnum hashTag){
+//        this.content = content;
+//        this.image = image;
+//        this.createdDate = createdDate;
+//        this.hashTag = hashTag;
+//    }
 
     public Integer getPostId() {
         return postId;
@@ -84,14 +97,6 @@ public class Post implements Serializable {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public HashTagEnum getHashTag() {
-        return hashTag;
-    }
-
-    public void setHashTag(HashTagEnum hashTag) {
-        this.hashTag = hashTag;
     }
 
     @JsonManagedReference(value = "post-postauction")
@@ -137,5 +142,13 @@ public class Post implements Serializable {
 
     public void setOwnerPost(User ownerPost) {
         this.ownerPost = ownerPost;
+    }
+
+    public Set<HashTagEnum> getHashTag() {
+        return hashTag;
+    }
+
+    public void setHashTag(Set<HashTagEnum> hashTag) {
+        this.hashTag = hashTag;
     }
 }

@@ -7,6 +7,9 @@ import com.tuyet.charity.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController

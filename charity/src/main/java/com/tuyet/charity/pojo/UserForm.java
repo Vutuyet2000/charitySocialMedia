@@ -1,5 +1,6 @@
 package com.tuyet.charity.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
@@ -21,6 +22,10 @@ public class UserForm {
     private String email;
 
     private MultipartFile avatar;
+
+    private RoleEnum role;
+
+    private boolean isActive = true;
 
     public Integer getUserId() {
         return id;
@@ -60,5 +65,21 @@ public class UserForm {
 
     public void setAvatar(MultipartFile avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 }

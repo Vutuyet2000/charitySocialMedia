@@ -26,6 +26,11 @@ public class PostServiceImpl implements PostService {
     private PostCustomRepository postCustomRepository;
 
     @Override
+    public int getAmountAllPosts() {
+        return (int) postRepository.count();
+    }
+
+    @Override
     public Page<Post> getAllPosts(int currentPage) {
         //tham số đầu tiên chỉ định trang có index bắt đầu bằng mấy
         Pageable pageable = PageRequest.of(currentPage-1,30);
@@ -33,8 +38,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void createPost(Post post) {
-        postRepository.save(post);
+    public Post createPost(Post post) {
+        return postRepository.save(post);
     }
 
     @Override
@@ -49,7 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPost(Integer id) {
-        return postRepository.getById(id);
+        return postRepository.findById(id).get();
     }
 
     @Override

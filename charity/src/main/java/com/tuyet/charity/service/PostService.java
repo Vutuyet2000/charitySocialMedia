@@ -7,8 +7,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface PostService {
+    int getAmountAllPosts();
     Page<Post> getAllPosts(int currentPage);
-    void createPost(Post post);
+    Post createPost(Post post);
     void createPostWithPostAuction(PostAuction post);
     Post getCreatedPos();
     Post getPost(Integer id);
