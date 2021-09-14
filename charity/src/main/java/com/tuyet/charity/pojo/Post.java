@@ -50,7 +50,7 @@ public class Post implements Serializable {
     private List<Notification> notifications;
 
     //like
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
     //OneToOne: postAuction

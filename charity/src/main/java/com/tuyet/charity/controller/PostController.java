@@ -6,6 +6,7 @@ import com.tuyet.charity.pojo.*;
 import com.tuyet.charity.service.PostAuctionService;
 import com.tuyet.charity.service.PostService;
 import com.tuyet.charity.service.UserService;
+import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,16 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
@@ -74,7 +70,21 @@ public class PostController {
 
     @PostMapping(value = "/post", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
-    public Post createPost(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth){
+    public ResponseEntity<Object> createPost(@Valid @ModelAttribute PostForm postReq,
+                                             OAuth2Authentication auth,
+                                             BindingResult result){
+        //validate post?? tai sao khong return lai error???
+        if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getAllErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+
+        //tao post
         post.setContent(postReq.getContent());
         post.setCreatedDate(postReq.getCreatedDate());
 
@@ -91,7 +101,8 @@ public class PostController {
         User ownerPost = userDetailsService.getCurrentUser(auth.getName());
         post.setOwnerPost(ownerPost);
         //tao post
-        return postService.createPost(post);
+        Post createdPost = postService.createPost(post);
+        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
     //tao post dau gia
@@ -123,7 +134,16 @@ public class PostController {
     }
 
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<Object> deletePost(@PathVariable(value = "postId") Integer postId){
+    public ResponseEntity<Object> deletePost(@PathVariable(value = "postId") Integer postId, OAuth2Authentication auth){
+        //kt lieu user co phai la admin va owner cua tai khoan
+        Post createdPost = postService.getPost(postId);
+        if(!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) &&
+                !createdPost.getOwnerPost().getUsername().equals(auth.getName())){
+            Map<String, String> msg = new HashMap<>();
+            msg.put("error","this username does not have permission to update user profile");
+            return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+        }
+        //delete post
         try {
             postService.deletePost(postId);
         }
@@ -256,17 +276,4 @@ public class PostController {
 
     //active auction for post
     //inactive auction
-
-    //validation object va tra response thich hop cho nhung phuong thuc co @Valid
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
 }

@@ -23,6 +23,8 @@ public class OAuth2ResourceServer extends ResourceServerConfigurerAdapter
             .antMatchers("/users/**").authenticated()
                 .antMatchers("/posts/**").authenticated()
                 .antMatchers("/post/**").authenticated()
+                .antMatchers("/likes/**").authenticated()
+                .antMatchers("/comments/**").authenticated()
             .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }
 }

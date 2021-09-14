@@ -23,7 +23,7 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
     private String SCOPE_WRITE = "write";
 
     private String clientId = "first-client";
-        private String clientPass = "noonewilleverguess";
+    private String clientPass = "noonewilleverguess";
 
     @Autowired
     private AuthenticationManager authenticationManager;

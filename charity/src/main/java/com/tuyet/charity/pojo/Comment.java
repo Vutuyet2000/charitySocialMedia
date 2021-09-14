@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ public class Comment implements Serializable {
     private Integer commentId;
 
     @Column(nullable = false)
+    @NotEmpty(message = "This field is not null")
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface NotificationService {
     List<Notification> getAllNotificationsPost(Integer postId);
+
+    void createNotification(Notification notification);
 }

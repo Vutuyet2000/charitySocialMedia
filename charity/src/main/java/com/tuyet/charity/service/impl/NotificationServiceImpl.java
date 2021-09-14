@@ -17,4 +17,9 @@ public class NotificationServiceImpl implements NotificationService {
     public List<Notification> getAllNotificationsPost(Integer postId) {
         return notificationRepository.findByPostPostId(postId);
     }
+
+    @Override
+    public void createNotification(Notification notification) {
+        notificationRepository.save(notification);
+    }
 }

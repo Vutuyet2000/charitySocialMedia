@@ -1,8 +1,6 @@
 package com.tuyet.charity.config;
 
-import com.tuyet.charity.pojo.Post;
-import com.tuyet.charity.pojo.PostAuction;
-import com.tuyet.charity.pojo.PostPagination;
+import com.tuyet.charity.pojo.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,5 +22,17 @@ public class BeanConfig {
     public Post createNewPost(){
         Post post = new Post();
         return post;
+    }
+
+    @Bean
+    public Like createNewLike(){
+        Like like = new Like();
+        return like;
+    }
+
+    @Bean
+    public Notification createNewNotification(){
+        Notification notification = new Notification();
+        return notification;
     }
 }
