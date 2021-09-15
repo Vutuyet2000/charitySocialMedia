@@ -6,7 +6,6 @@ import com.tuyet.charity.pojo.*;
 import com.tuyet.charity.service.PostAuctionService;
 import com.tuyet.charity.service.PostService;
 import com.tuyet.charity.service.UserService;
-import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

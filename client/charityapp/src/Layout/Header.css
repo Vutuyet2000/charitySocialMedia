@@ -1,0 +1,16 @@
+.ui.container{
+    width: 1679px!important;;
+}
+
+#searchID{
+    margin-left:18px;
+}
+ 
+.right.spaced.image
+{
+    width: 30px!important;
+    height: 30px!important;
+    border-radius: 50%!important;
+    object-fit: cover!important;
+    margin-right: 10px!important;
+}

@@ -3,7 +3,6 @@ package com.tuyet.charity.pojo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import javafx.geometry.Pos;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;

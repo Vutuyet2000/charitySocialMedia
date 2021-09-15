@@ -1,0 +1,22 @@
+.ui.sidebar{
+  width: 18em!important;
+  top: 64px!important;
+}
+
+h4 {
+  color: white !important;
+  font-size: small!important;
+  font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif!important;
+}
+
+h4 span{
+  margin-left: 12px;
+}
+
+#ava{
+  width: 40px!important;
+  height: 41px!important;
+  border-radius: 50%!important;
+  object-fit: cover!important;
+  margin-right: 10px!important;
+}
