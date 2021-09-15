@@ -275,4 +275,5 @@ public class PostController {
 
     //active auction for post
     //inactive auction
+
 }

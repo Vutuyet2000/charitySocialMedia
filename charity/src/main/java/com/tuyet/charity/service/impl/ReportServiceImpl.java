@@ -16,7 +16,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<Report> getAllReports() {
-        return reportRepository.findAll();
+//        return reportRepository.findAll();
+        return reportRepository.findAllByOrderByReportIdDesc();
     }
 
     @Override

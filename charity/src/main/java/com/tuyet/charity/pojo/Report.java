@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -18,6 +20,7 @@ public class Report implements Serializable {
     //test enum gui request se the nao
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "This field is required")
     private ReportEnum content;
 
     //Many to many user (report)

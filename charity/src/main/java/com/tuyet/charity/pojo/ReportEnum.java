@@ -14,15 +14,15 @@ public enum ReportEnum {
     }
 
     //Deserialize enum (content: "khongthanhtoan")
-//    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-//    public static ReportEnum getEnumFromValue(String value) {
-//        for (ReportEnum enumReport : ReportEnum.values()) {
-//            if (enumReport.name().equals(value)) {
-//                return enumReport;
-//            }
-//        }
-//        throw new IllegalArgumentException();
-//    }
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static ReportEnum getEnumFromValue(String value) {
+        for (ReportEnum enumReport : ReportEnum.values()) {
+            if (enumReport.name().equals(value)) {
+                return enumReport;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 
     //Serialize enum ("content":"Người dùng không thanh toán")
     @JsonValue
