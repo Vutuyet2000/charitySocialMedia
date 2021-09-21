@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userDetailsService;
@@ -39,19 +41,22 @@ public class UserController {
     //multipart user
     @PostMapping(value = "/sign-up", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> createUser(@Valid @ModelAttribute UserForm user, BindingResult result){
+    public ResponseEntity<Object> createUser(@ModelAttribute UserForm user){
         try {
             //validate user
-            if(result.hasErrors()){
-                Map<String, String> errors = new HashMap<>();
-                result.getAllErrors().forEach((error) -> {
-                    String fieldName = ((FieldError) error).getField();
-                    String errorMessage = error.getDefaultMessage();
-                    errors.put(fieldName, errorMessage);
-                });
-                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+//            if(result.hasErrors()){
+//                Map<String, String> errors = new HashMap<>();
+//                result.getAllErrors().forEach((error) -> {
+//                    String fieldName = ((FieldError) error).getField();
+//                    String errorMessage = error.getDefaultMessage();
+//                    errors.put(fieldName, errorMessage);
+//                });
+//                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+//            }
+            // username, pass ko null
+            if(user.getPassword() == null || user.getUsername() == null){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-
             //kt khong trung username
             User createdUsername = userDetailsService.getUserByUsername(user.getUsername());
             if(createdUsername != null){
@@ -61,10 +66,18 @@ public class UserController {
             }
 
             //tao user
-            Map avatarLink = this.cloudinary.uploader().upload(user.getAvatar().getBytes(),
-                    ObjectUtils.asMap("resource_type","auto"));
-            User usr = new User(user.getUsername(), user.getPassword(), user.getEmail(),
-                    (String) avatarLink.get("secure_url"));
+            User usr = new User();
+            usr.setUsername(user.getUsername());
+            usr.setPassword(user.getPassword());
+            usr.setEmail(user.getEmail());
+
+            if(user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+                Map avatarLink = this.cloudinary.uploader().upload(user.getAvatar().getBytes(),
+                        ObjectUtils.asMap("resource_type", "auto"));
+//                usr = new User(user.getUsername(), user.getPassword(), user.getEmail(),
+//                        (String) avatarLink.get("secure_url"));
+                usr.setAvatar((String) avatarLink.get("secure_url"));
+            }
             return new ResponseEntity<>(userDetailsService.addUser(usr), HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
