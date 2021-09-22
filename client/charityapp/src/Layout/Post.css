@@ -11,7 +11,7 @@
 }
 
 .ui.pagination.menu {
-  margin-left: 565px;
+  margin-left: 645px;
 }
 
 .ui.feed {
@@ -34,7 +34,7 @@
   border-radius: 10px;
   box-shadow: 0px 0px 16px -8px rgb(0 0 0 / 68%);
   margin: 47px 0;
-  margin-left: 28em;
+  margin-left: 32em;
 }
 
 .postWrapper {
@@ -106,4 +106,8 @@
     cursor: pointer;
     border-bottom: 1px dashed gray;
     font-size: 15px;
+}
+
+#cmtModal{
+  width: 40em;
 }

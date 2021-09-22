@@ -22,11 +22,18 @@ export default function LoginForm() {
 
   const login = async (e) =>{
     e.preventDefault()
-    let res= await API.post(endpoints['login'],{
-       'username':values.username,
-       'password':values.password,  
-       'grant_type':'password'
-     })
+    
+      let res= await API.post(`${endpoints['login']}?
+      grant_type=password&client_id=first-client&client_secret=noonewilleverguess
+      &username=${values.username}&password=${values.password}`,
+    {
+    },
+    {
+      headers:{
+        'Content-Type':'application/x-www-form-urlencoded',
+        'Authorization':'Basic Zmlyc3QtY2xpZW50Om5vb25ld2lsbGV2ZXJndWVzcw=='
+      }
+    })
  
      cookies.save('access_token',res.data.access_token)
  
@@ -35,13 +42,13 @@ export default function LoginForm() {
          'Authorization':`Bearer ${cookies.load('access_token')}`
        }
      })
+
      cookies.save("user",user.data)
      dispatch({
        "type":"login",
        "payload":user.data
      })
      setLogged(true)
-
    }
 
   if(isLogged)

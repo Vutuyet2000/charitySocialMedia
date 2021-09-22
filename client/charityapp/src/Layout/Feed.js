@@ -9,7 +9,7 @@ export default function Feed() {
           {/* {Post.map((p) => (
             <Post key={p.id} post={p} />
           ))} */}
-          <Post/>
+          <Post />
         </div>
       </div>
     );

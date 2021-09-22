@@ -224,7 +224,7 @@ export default function Share() {
               <span className="shareOptionText">Feelings</span>
             </div>
           </div>
-          <Button id="postID" className="shareButton" color="blue">Post</Button>
+          <Button id="postID"    className="shareButton" color="blue">Post</Button>
         </div>
       </div>
     </div>

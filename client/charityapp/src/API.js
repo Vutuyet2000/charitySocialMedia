@@ -3,7 +3,7 @@ import cookies from 'react-cookies'
 
 
 export let endpoints ={
-    'post':'/post/',
+    'post':'/posts/',
     'auction':'/post/create-auction/',
     'login':'/oauth/token/',
     'users':'/users/',

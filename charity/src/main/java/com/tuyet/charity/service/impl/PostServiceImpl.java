@@ -31,7 +31,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<Post> getAllPosts(int currentPage) {
         //tham số đầu tiên chỉ định trang có index bắt đầu bằng mấy
-        Pageable pageable = PageRequest.of(currentPage-1,30);
+        Pageable pageable = PageRequest.of(currentPage-1,3);
         return postRepository.findAllByOrderByCreatedDateDesc(pageable);
     }
 
