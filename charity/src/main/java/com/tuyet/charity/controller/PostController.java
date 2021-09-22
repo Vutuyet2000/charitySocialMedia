@@ -67,6 +67,12 @@ public class PostController {
         return postPagination;
     }
 
+    //lay post theo user id
+    public PostPagination getAllPostsOfUser(@RequestParam(value = "page", defaultValue = "1") int currentPage,
+                                            @RequestParam(value = "user-id") int userId){
+        return null;
+    }
+
     @PostMapping(value = "/post", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Object> createPost(@Valid @ModelAttribute PostForm postReq,
@@ -275,5 +281,4 @@ public class PostController {
 
     //active auction for post
     //inactive auction
-
 }

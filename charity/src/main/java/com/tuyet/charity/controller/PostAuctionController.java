@@ -17,13 +17,13 @@ public class PostAuctionController {
     @Autowired
     private PostAuctionService postAuctionService;
 
-    @GetMapping("/post-auction")
-    public List<PostAuction> getAllPostAuctions(){
-        return postAuctionService.getAllPostAuctions();
-    }
+//    @GetMapping("/post-auction")
+//    public List<PostAuction> getAllPostAuctions(){
+//        return postAuctionService.getAllPostAuctions();
+//    }
 
-    @PostMapping("/post-auction")
-    public void createPostAuctions(@RequestBody PostAuction postAuction, @PathVariable Integer post_id){
-        postAuctionService.createPostAuction(postAuction);
-    }
+//    @PostMapping("/post-auction")
+//    public void createPostAuctions(@RequestBody PostAuction postAuction, @PathVariable Integer post_id){
+//        postAuctionService.createPostAuction(postAuction);
+//    }
 }

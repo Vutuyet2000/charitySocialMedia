@@ -32,4 +32,9 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(Comment comment) {
         return commentRepository.save(comment);
     }
+
+    @Override
+    public Integer countCommentInYear(int year) {
+        return commentRepository.countCommentInYear(year);
+    }
 }

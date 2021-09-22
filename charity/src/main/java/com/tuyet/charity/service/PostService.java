@@ -14,4 +14,5 @@ public interface PostService {
     Post getCreatedPos();
     Post getPost(Integer id);
     void deletePost(Integer id);
+    Integer countYearPost(int year);
 }
