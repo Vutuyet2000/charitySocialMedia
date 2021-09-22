@@ -79,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").authenticated()
                 .antMatchers("/posts/**").authenticated()
                 .antMatchers("/post/**").authenticated()
+                .antMatchers("/post-auction/**").authenticated()
                 .antMatchers("/likes/**").authenticated()
                 .antMatchers("/comments/**").authenticated()
                .antMatchers( "/oauth/**","/sign-up").permitAll()

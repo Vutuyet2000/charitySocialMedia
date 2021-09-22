@@ -11,4 +11,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Integer> {
     List<Comment> findByPostPostId(Integer postId);
+
+    @Query("select count(c.commentId) from Comment c where year(c.createdDate) = ?1")
+    Integer countCommentInYear(int year);
 }

@@ -12,4 +12,6 @@ public interface CommentService {
     Comment getCommentById(Integer commentId);
 
     Comment createComment(Comment comment);
+
+    Integer countCommentInYear(int year);
 }

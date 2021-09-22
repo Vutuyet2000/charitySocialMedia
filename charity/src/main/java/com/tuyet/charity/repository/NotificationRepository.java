@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification,Integer> {
-    List<Notification> findByPostPostId(Integer postId);
+    List<Notification> findByActiveTrueAndUserUserId(Integer userId);
+
+    Notification findByNotificationId(Integer notificationId);
 }
