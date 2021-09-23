@@ -3,6 +3,7 @@ package com.tuyet.charity.controller;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.tuyet.charity.pojo.*;
+import com.tuyet.charity.repository.PostAuctionCustomRespository;
 import com.tuyet.charity.service.PostAuctionService;
 import com.tuyet.charity.service.PostService;
 import com.tuyet.charity.service.UserService;
@@ -56,7 +57,7 @@ public class PostController {
     @Autowired
     private Post post;
 
-    @GetMapping("/posts")
+    @GetMapping("/post")
     public PostPagination getAllPosts(@RequestParam(value = "page", defaultValue = "1") int currentPage){
         Page<Post> page = postService.getAllPosts(currentPage);
         List<Post> list = page.getContent();
@@ -134,7 +135,8 @@ public class PostController {
 
         //tao post Auction
         postAuction.setPost(post);
-        postAuctionService.createPostAuction(postAuction);
+//        postAuctionService.createPostAuction(postAuction);
+        postAuctionService.createNewPostAuction(postAuction);
 
         return post;
     }
