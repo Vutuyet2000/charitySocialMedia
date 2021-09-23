@@ -42,19 +42,20 @@ public class Post implements Serializable {
 
     //Many to many: user (like, comment, notification);
     //comment
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE,CascadeType.MERGE})
     private List<Comment> comments;
 
     //notification
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE,CascadeType.MERGE})
     private List<Notification> notifications;
 
     //like
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE,CascadeType.MERGE}, orphanRemoval = true)
+//    @OneToMany(mappedBy = "post")
     private List<Like> likes;
 
     //OneToOne: postAuction
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "post", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     @PrimaryKeyJoinColumn //The PrimaryKeyJoinColumn annotation specifies a primary key column that is used as a foreign key to join to another table.
     private PostAuction postAuction;
 

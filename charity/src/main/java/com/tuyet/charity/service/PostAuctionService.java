@@ -7,5 +7,5 @@ import java.util.List;
 public interface PostAuctionService {
     List<PostAuction> getAllPostAuctions();
     void createPostAuction(PostAuction postAuction);
-
+    void createNewPostAuction(PostAuction postAuction);
 }
