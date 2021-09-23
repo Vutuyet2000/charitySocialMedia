@@ -3,6 +3,7 @@ import '../Layout/Header.css'
 import cookies from 'react-cookies'
 import { useStore } from "react-redux"
 import getUser from '../getUser'
+import { Link } from 'react-router-dom'
 
 const languageOptions = [
     { key: 'Vietnamese', text: 'Vietnamese', value: 'Vietnamese' },
@@ -24,7 +25,12 @@ function Header() {
         src: user.avatar
     }
     if (user != null)
-        r = <Label as='a' color='black' content={user.username} image={imageProps} />
+        r = <Label
+            as={Link}
+            color='black'
+            to="/my-profile"
+            content={user.username}
+            image={imageProps} />
 
     const logout = () => {
         cookies.remove("Token")
@@ -41,7 +47,7 @@ function Header() {
                         <Search id="searchID" placeholder="Search Charity" />
                     </Menu.Item>
                     <Menu.Menu position="right">
-                        <Menu.Item as='a'><Icon name='home' size="large" /></Menu.Item>
+                        <Menu.Item as={Link} to="/home"><Icon name='home' size="large" /></Menu.Item>
                         <Menu.Item as='a'><Icon name='like' size="large" /></Menu.Item>
                         <Menu.Item as='a'><Icon name='group' size="large" /></Menu.Item>
                         <Menu.Item as='a'><Icon name='gamepad' size="large" /></Menu.Item>

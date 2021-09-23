@@ -73,8 +73,11 @@ export default function Share() {
   // hàm gọi API của post đấu giá
   function handleAuction(event) {
     const formData = new FormData()
-    for (let k in share)
+    for (let k in share){
+      console.log(k)
       formData.append(k, share[k])
+    }
+      
     formData.append('image', image)
     AuthAPI.post(endpoints['auction'], formData, {
       headers: {
@@ -164,15 +167,15 @@ export default function Share() {
                         onChange={handleImageChange}
                       />
                       <Icon
-                  className="close-icon"
-                  name="close"
-                  size="large"
-                  alt="CloseIcon"
-                  onClick={() => {
-                    setIsUploaded(false);
-                    
-                  }}
-                />
+                        className="close-icon"
+                        name="close"
+                        size="large"
+                        alt="CloseIcon"
+                        onClick={() => {
+                          setIsUploaded(false);
+
+                        }}
+                      />
 
                     </Modal.Content>
                     {share.content.trim() !== "" ? (
@@ -224,7 +227,7 @@ export default function Share() {
               <span className="shareOptionText">Feelings</span>
             </div>
           </div>
-          <Button id="postID"    className="shareButton" color="blue">Post</Button>
+          <Button id="postID" onClick={() => handlePost} className="shareButton" color="blue">Post</Button>
         </div>
       </div>
     </div>

@@ -3,18 +3,19 @@ import cookies from 'react-cookies'
 
 
 export let endpoints ={
-    'post':'/posts/',
-    'auction':'/post/create-auction/',
-    'login':'/oauth/token/',
+    'post':'/post',
+    'auction':'/post/create-post-auction',
+    'login':'/oauth/token',
     'users':'/users/',
     'sign-up':'/sign-up',
-    'current-user':'/users/current-user/'
+    'current-user':'/users/current-user'
 }
 
 export let AuthAPI = axios.create({
     baseURL:'http://127.0.0.1:8080/',
     headers:{
         'Authorization':`Bearer ${cookies.load('access_token')}`
+
     }
 })
 

@@ -7,13 +7,13 @@ import moment from "moment"
 import cookies from 'react-cookies'
 
 import './Post.css'
-export default function Post({ post }) {
+export default function Post(props) {
   const [posts, setPost] = useState([])
   const [like, setLike] = useState(posts.likes)
   const [isLiked, setIsLiked] = useState(false)
   const [count, setCount] = useState(0)
   const [open, setOpen] = useState(true)
-
+  const currentUser=props.username
   const likeHandler = () => {
     setLike(isLiked ? like - 1 : like + 1)
     setIsLiked(!isLiked)
@@ -26,13 +26,15 @@ export default function Post({ post }) {
   const getPost = () => {
     // const paramsString = queryString.stringify(page)
     console.log(page)
-    AuthAPI.get(`${endpoints['post']}?page=${page}`, {
+    AuthAPI.get(endpoints['post'], {
       headers: {
         'Authorization': `Bearer ${cookies.load('access_token')}`
       }
 
     }).then(res => {
-      setPost(res.data.results)
+      console.log(res.data.listPost)
+      setPost(res.data.listPost)
+      // console.log(res.data.listPost)
       // setFilter(pagination)
       setCount(res.data.count)
 
@@ -40,6 +42,7 @@ export default function Post({ post }) {
   }
 
   useEffect(() => {
+    document.title = "Home";
     getPost();
   }, [page])
 
@@ -52,18 +55,33 @@ export default function Post({ post }) {
     )
   return (
     <>
-      <Feed>
-        {posts.map(p =>
-          <FeedPost posts={p} action={likeHandler} />
-        )}
-      </Feed>
+      {/* {currentUser==null ? ( */}
+        <Feed>
+          {posts.map(p =>
+            <FeedPost posts={p}  />
+          )}
+        </Feed>
+      {/* ) : (
+
+        <Feed>
+
+          {posts.filter((p) => currentUser === p.username)
+            .map(post =>
+              <FeedPost posts={post} action={likeHandler} />
+
+            )}
+        </Feed>
+
+          ) */}
+
+      {/* } */}
 
       <Pagination
         defaultActivePage={1}
         ellipsisItem={null}
         firstItem={null}
         lastItem={null}
-        totalPages={items.length}
+        // totalPages={items.length}
         onPageChange={handlePageChange}
       >
       </Pagination>
@@ -79,9 +97,9 @@ function FeedPost(props) {
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <img className="postProfileImg" src={props.posts.user.avatar} alt="avatar" />
+            <img className="postProfileImg" src={props.posts.ownerPost.avatar} alt="avatar" />
             <span className="postUsername">
-              {props.posts.user.username}
+              {props.posts.ownerPost.username}
               <span> created a post</span>
             </span>
             <span className="postDate">{timeAgo}</span>

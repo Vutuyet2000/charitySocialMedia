@@ -22,10 +22,8 @@ export default function LoginForm() {
 
   const login = async (e) =>{
     e.preventDefault()
-    
-      let res= await API.post(`${endpoints['login']}?
-      grant_type=password&client_id=first-client&client_secret=noonewilleverguess
-      &username=${values.username}&password=${values.password}`,
+    try{
+      let res= await API.post(`${endpoints['login']}?grant_type=password&client_id=first-client&client_secret=noonewilleverguess&username=${values.username}&password=${values.password}`,
     {
     },
     {
@@ -34,22 +32,49 @@ export default function LoginForm() {
         'Authorization':'Basic Zmlyc3QtY2xpZW50Om5vb25ld2lsbGV2ZXJndWVzcw=='
       }
     })
- 
-     cookies.save('access_token',res.data.access_token)
- 
-     let user = await AuthAPI.get(endpoints['current-user'],{
-       headers:{
-         'Authorization':`Bearer ${cookies.load('access_token')}`
-       }
-     })
+      // let re1= await API.post(endpoints['login'],
+      // {
+      //   'username':'first-client',
+      //   'password':'noonewilleverguess'
+      // })
+      // console.log(re1.data)
 
-     cookies.save("user",user.data)
-     dispatch({
-       "type":"login",
-       "payload":user.data
-     })
-     setLogged(true)
-   }
+      // let res= await API.post(endpoints['login'],
+      // {
+      //   'grant_type=password&username=test&password=1'
+      //   // 'client_id':'first-client',
+      //   // 'client_secret':'noonewilleverguess',
+      //   // 'username':values.username,
+      //   // 'password':values.password,  
+      //   // 'grant_type':'password'
+      // },
+      // {
+      //   headers:{
+      //     'Content-Type':'application/x-www-form-urlencoded',
+      //     'Authorization':'Basic Zmlyc3QtY2xpZW50Om5vb25ld2lsbGV2ZXJndWVzcw=='
+      //   }
+      // })
+      // console.log(res);
+      cookies.save('access_token',res.data.access_token)
+      let user = await AuthAPI.get(endpoints['current-user'],{
+        headers:{
+          'Authorization':`Bearer ${cookies.load('access_token')}`
+        }
+      })
+ 
+      cookies.save("user",user.data)
+      
+        dispatch({
+          "type":"login",
+          "payload":user.data
+        })
+        setLogged(true)
+      
+    }
+    catch (ex){
+      console.log(ex);
+    }
+  }
 
   if(isLogged)
     return <Redirect to= "/home"/>

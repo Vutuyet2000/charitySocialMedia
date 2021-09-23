@@ -18,7 +18,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -55,7 +58,7 @@ public class PostController {
     @Autowired
     private Post post;
 
-    @GetMapping("/posts")
+    @GetMapping("/post")
     public PostPagination getAllPosts(@RequestParam(value = "page", defaultValue = "1") int currentPage){
         Page<Post> page = postService.getAllPosts(currentPage);
         List<Post> list = page.getContent();
@@ -113,19 +116,25 @@ public class PostController {
     //tao post dau gia
     @PostMapping(value = "/post/create-post-auction", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
-    public Post createPostAuction(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth){
+    public Post createPostAuction(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth,
+                                  @RequestPart("image") MultipartFile file){
         //create post
+        System.out.print(file);
         post.setContent(postReq.getContent());
         post.setCreatedDate(postReq.getCreatedDate());
 
         post.setHashTag(postReq.getHashTag());
+
+        System.out.println(postReq.getImage());
         //upload image
-        try {
-            Map avatarLink = this.cloudinary.uploader().upload(postReq.getImage().getBytes(),
-                    ObjectUtils.asMap("resource_type","auto"));
-            post.setImage( (String) avatarLink.get("secure_url"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(postReq.getImage()!=null) {
+            try {
+                Map avatarLink = this.cloudinary.uploader().upload(postReq.getImage().getBytes(),
+                        ObjectUtils.asMap("resource_type", "auto"));
+                post.setImage((String) avatarLink.get("secure_url"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         //lay user tao post
         User ownerPost = userDetailsService.getCurrentUser(auth.getName());
