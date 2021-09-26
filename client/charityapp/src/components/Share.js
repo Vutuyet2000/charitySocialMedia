@@ -73,11 +73,9 @@ export default function Share() {
   // hàm gọi API của post đấu giá
   function handleAuction(event) {
     const formData = new FormData()
-    for (let k in share){
-      console.log(k)
+    for (let k in share) {
       formData.append(k, share[k])
     }
-      
     formData.append('image', image)
     AuthAPI.post(endpoints['auction'], formData, {
       headers: {

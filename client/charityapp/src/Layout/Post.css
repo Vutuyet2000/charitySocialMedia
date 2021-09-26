@@ -11,7 +11,7 @@
 }
 
 .ui.pagination.menu {
-  margin-left: 645px;
+  margin-left: 645px!important;
 }
 
 .ui.feed {

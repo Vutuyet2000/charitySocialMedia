@@ -32,29 +32,7 @@ export default function LoginForm() {
         'Authorization':'Basic Zmlyc3QtY2xpZW50Om5vb25ld2lsbGV2ZXJndWVzcw=='
       }
     })
-      // let re1= await API.post(endpoints['login'],
-      // {
-      //   'username':'first-client',
-      //   'password':'noonewilleverguess'
-      // })
-      // console.log(re1.data)
-
-      // let res= await API.post(endpoints['login'],
-      // {
-      //   'grant_type=password&username=test&password=1'
-      //   // 'client_id':'first-client',
-      //   // 'client_secret':'noonewilleverguess',
-      //   // 'username':values.username,
-      //   // 'password':values.password,  
-      //   // 'grant_type':'password'
-      // },
-      // {
-      //   headers:{
-      //     'Content-Type':'application/x-www-form-urlencoded',
-      //     'Authorization':'Basic Zmlyc3QtY2xpZW50Om5vb25ld2lsbGV2ZXJndWVzcw=='
-      //   }
-      // })
-      // console.log(res);
+     
       cookies.save('access_token',res.data.access_token)
       let user = await AuthAPI.get(endpoints['current-user'],{
         headers:{

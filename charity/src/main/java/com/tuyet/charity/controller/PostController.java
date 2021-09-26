@@ -233,7 +233,7 @@ public class PostController {
     }
 
     //choose winner => inactive post auciton => send mail to winner
-    @GetMapping("/post/{postId}/choose-winner")
+    @PostMapping("/post/{postId}/choose-winner")
     public ResponseEntity<Object> chooseWinner(@PathVariable(value = "postId") Integer postId,
                                     @RequestParam(value = "winner-id", defaultValue = "0") Integer winnerId,
                                     @RequestParam(value = "cost", defaultValue = "0") BigDecimal cost,

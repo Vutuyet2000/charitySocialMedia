@@ -66,7 +66,7 @@ export default function Profile() {
                         </div>
                     </div>
                 </div>
-                <Post ownerPost={user} />
+                <Post user={user} />
         </>
             )
 }

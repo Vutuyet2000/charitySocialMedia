@@ -8,9 +8,12 @@ export let endpoints ={
     'login':'/oauth/token',
     'users':'/users/',
     'sign-up':'/sign-up',
-    'current-user':'/users/current-user'
+    'current-user':'/users/current-user',
+    'comments':(post_id)=>`/comments/?post-id=${post_id}`,
+    'likes':(post_id)=>`/likes/?post-id=${post_id}`,
+    'winner':(post_id,userID,cost)=>`/post/${post_id}/choose-winner?cost=${cost}&winner-id=${userID}`,
 }
-
+    
 export let AuthAPI = axios.create({
     baseURL:'http://127.0.0.1:8080/',
     headers:{
