@@ -7,8 +7,10 @@ import cookies from 'react-cookies'
 import './Post.css'
 
 export default function Post({ user } = null) {
+
   let [posts, setPost] = useState([])
   let [like, setLike] = useState(posts.likes)
+  console.log(like)
   let [isLiked, setIsLiked] = useState(false)
   const [count, setCount] = useState(0)
   let [winnerId, setWinnerId] = useState({
@@ -25,10 +27,11 @@ export default function Post({ user } = null) {
     postId: null
   })
   let [isComment, setIsComment] = useState(true)
-  const likeHandler = () => {
-    setLike(isLiked ? like - 1 : like + 1)
-    setIsLiked(!isLiked)
-  }
+
+  // const likeHandler = () => {
+  //   setLike(isLiked ? like - 1 : like + 1)
+  //   setIsLiked(!isLiked)
+  // }
   const [page, setPage] = useState(1)
   const handlePaginationChange = (e, { activePage }) => setPage(activePage);
 
@@ -39,14 +42,13 @@ export default function Post({ user } = null) {
       headers: {
         'Authorization': `Bearer ${cookies.load('access_token')}`
       }
-
     }).then(res => {
       console.log(res.data.listPost)
       setPost(res.data.listPost)
       setCount(res.data.count)
     });
-
   }
+
   // hàm thay đổi giá trị của content
   function handleChange(event) {
     setComment({
@@ -74,16 +76,47 @@ export default function Post({ user } = null) {
     }
   }
 
+  // hàm gọi API like
+  const likeHandler = async (event) => {
+
+    try {
+      if (!isLiked) {
+        let rest = await AuthAPI.post(endpoints['likes'](postID.postId), {
+
+          "likes": like
+        }, {
+          headers: {
+            'Authorization': `Bearer ${cookies.load('access_token')}`
+          }
+        })
+        console.log(rest.data)
+      }
+      else {
+        let rest = await AuthAPI.delete(endpoints['likes'](postID.postId), {
+
+          "likes": like
+        }, {
+          headers: {
+            'Authorization': `Bearer ${cookies.load('access_token')}`
+          }
+        })
+        console.log(rest.data)
+
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   // hàm gọi API ghi nhận thông tin người thắng đấu giá
   const handleChooseWinner = async (event) => {
     event.preventDefault();
-
     try {
 
-      await AuthAPI.post(endpoints['winner'](postID.postId, winnerId.winnerId, cost.cost),{
-        "cost":cost.cost,
-        "winner-id":winnerId.winnerId
-      } ,{
+      await AuthAPI.post(endpoints['winner'](postID.postId, winnerId.winnerId, cost.cost), {
+        "cost": cost.cost,
+        "winner-id": winnerId.winnerId
+      }, {
         headers: {
           'Authorization': `Bearer ${cookies.load('access_token')}`
         }
@@ -91,13 +124,12 @@ export default function Post({ user } = null) {
     } catch (ex) {
       console.error(ex)
     }
-
   }
 
   useEffect(() => {
     document.title = "Home";
     getPost();
-  }, [page])
+  }, [page, like])
 
   let items = []
   for (let i = 0; i < Math.ceil(count / 3); i++)
@@ -110,11 +142,10 @@ export default function Post({ user } = null) {
   return (
     <>
       {user == null ? (
-
         <Feed>
           {posts.map(post => {
             var timeAgo = moment(post.createdDate).fromNow()
-
+            
             return (
               <>
                 <span>{post.pos}</span>
@@ -138,8 +169,18 @@ export default function Post({ user } = null) {
                     </div>
                     <div className="postBottom">
                       <div className="postBottomLeft">
-                        <img className="likeIcon" src="/assert/like.png" onClick={likeHandler} alt="" />
-                        <img className="likeIcon" src="/assert/heart.png" onClick={likeHandler} alt="" />
+                        <img
+                          className="likeIcon"
+                          src="/assert/like.png"
+                          onClick={(e) => {
+                            setPostID({
+                              postId: post.postId
+                            });
+                            setIsLiked(true)
+                            likeHandler()
+                          }}
+                          alt="" />
+                          {console.log(isLiked)}
                         {post.likes.length === 0 ? (
                           <span className="postLikeCounter">{post.likes} </span>
                         ) : (
@@ -238,7 +279,7 @@ export default function Post({ user } = null) {
                           <Modal
                             id="cmtModal"
                             trigger={<span>{post.comments.length} Comments</span>}
-                            >
+                          >
                             <Modal.Content>
                               <Header as='h3' dividing>
                                 Comments
@@ -265,15 +306,14 @@ export default function Post({ user } = null) {
                                               value={comment.user.userId}
                                               onChange={(e) => {
                                                 setWinnerId({
-                                                  winnerId:comment.user.userId
+                                                  winnerId: comment.user.userId
                                                 });
                                                 setIsChecked(true)
                                                 setPostID({
                                                   postId: post.postId
                                                 })
-                                                
                                                 setCost({
-                                                  cost:comment.content
+                                                  cost: comment.content
                                                 })
                                               }}
                                             />
@@ -324,7 +364,6 @@ export default function Post({ user } = null) {
             )}
         </Feed>
       )}
-
       <Pagination
         defaultActivePage={1}
         firstItem={null}
