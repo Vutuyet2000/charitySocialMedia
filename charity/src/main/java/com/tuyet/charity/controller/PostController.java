@@ -93,60 +93,77 @@ public class PostController {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
 
+        Post newPost = new Post();
         //tao post
-        post.setContent(postReq.getContent());
-        post.setCreatedDate(postReq.getCreatedDate());
+        newPost.setContent(postReq.getContent());
+        newPost.setCreatedDate(postReq.getCreatedDate());
 
-        post.setHashTag(postReq.getHashTag());
+        newPost.setHashTag(postReq.getHashTag());
         //upload image
         try {
             Map avatarLink = this.cloudinary.uploader().upload(postReq.getImage().getBytes(),
                     ObjectUtils.asMap("resource_type","auto"));
-            post.setImage( (String) avatarLink.get("secure_url"));
+            newPost.setImage( (String) avatarLink.get("secure_url"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         //lay user tao post
         User ownerPost = userDetailsService.getCurrentUser(auth.getName());
-        post.setOwnerPost(ownerPost);
+        newPost.setOwnerPost(ownerPost);
         //tao post
-        Post createdPost = postService.createPost(post);
+        Post createdPost = postService.createPost(newPost);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
+
+
+//    public Post createPostAuction(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth,
+//                                  @RequestPart("image") MultipartFile file){
+//        //create post
+//        System.out.print(file);
+//        post.setContent(postReq.getContent());
+//        post.setCreatedDate(postReq.getCreatedDate());
+//
+//        post.setHashTag(postReq.getHashTag());
+//
+//        System.out.println(postReq.getImage());
+//        //upload image
+//        if(postReq.getImage()!=null) {
+//            try {
+//                Map avatarLink = this.cloudinary.uploader().upload(postReq.getImage().getBytes(),
+//                        ObjectUtils.asMap("resource_type", "auto"));
+//                post.setImage((String) avatarLink.get("secure_url"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
     //tao post dau gia
     @PostMapping(value = "/post/create-post-auction", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
-    public Post createPostAuction(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth,
-                                  @RequestPart("image") MultipartFile file){
+    public Post createPostAuction(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth){
+        Post newPost = new Post();
         //create post
-        System.out.print(file);
-        post.setContent(postReq.getContent());
-        post.setCreatedDate(postReq.getCreatedDate());
+        newPost.setContent(postReq.getContent());
+        newPost.setCreatedDate(postReq.getCreatedDate());
 
-        post.setHashTag(postReq.getHashTag());
-
-        System.out.println(postReq.getImage());
+        newPost.setHashTag(postReq.getHashTag());
         //upload image
-        if(postReq.getImage()!=null) {
-            try {
-                Map avatarLink = this.cloudinary.uploader().upload(postReq.getImage().getBytes(),
-                        ObjectUtils.asMap("resource_type", "auto"));
-                post.setImage((String) avatarLink.get("secure_url"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            Map avatarLink = this.cloudinary.uploader().upload(postReq.getImage().getBytes(),
+                    ObjectUtils.asMap("resource_type","auto"));
+            newPost.setImage( (String) avatarLink.get("secure_url"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         //lay user tao post
         User ownerPost = userDetailsService.getCurrentUser(auth.getName());
-        post.setOwnerPost(ownerPost);
+        newPost.setOwnerPost(ownerPost);
 
         //tao post Auction
-        postAuction.setPost(post);
+        postAuction.setPost(newPost);
 //        postAuctionService.createPostAuction(postAuction);
         postAuctionService.createNewPostAuction(postAuction);
 
-        return post;
+        return newPost;
     }
 
     @DeleteMapping("/post/{postId}")
