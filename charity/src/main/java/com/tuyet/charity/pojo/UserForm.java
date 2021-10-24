@@ -19,13 +19,13 @@ public class UserForm {
 
     private String lastName;
 
-//    @NotEmpty(message = "Username is required")
+    @NotEmpty(message = "Username is required")
     private String username;
 
-//    @NotEmpty(message = "Password is required")
+    @NotEmpty(message = "Password is required")
     private String password;
 
-//    @Pattern(regexp = "^[\\w+_-]+@((\\w+\\.\\w+)+)$",message = "Email is invalid")
+    @Pattern(regexp = "^[\\w+_-]+@((\\w+\\.\\w+)+)$",message = "Email is invalid")
     private String email;
 
     private MultipartFile avatar;

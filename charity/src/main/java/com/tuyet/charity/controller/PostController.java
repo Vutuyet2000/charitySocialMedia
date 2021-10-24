@@ -9,6 +9,7 @@ import com.tuyet.charity.service.PostService;
 import com.tuyet.charity.service.UserService;
 import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,10 +53,13 @@ public class PostController {
     private PostPagination postPagination;
 
     @Autowired
-    private PostAuction postAuction;
+    private ApplicationContext applicationContext;
 
-    @Autowired
-    private Post post;
+//    @Autowired
+//    private PostAuction postAuction;
+
+//    @Autowired
+//    private Post post;
 
     @GetMapping("/post")
     public PostPagination getAllPosts(@RequestParam(value = "page", defaultValue = "1") int currentPage){
@@ -70,17 +74,16 @@ public class PostController {
     }
 
     //lay post theo user id
-    public PostPagination getAllPostsOfUser(@RequestParam(value = "page", defaultValue = "1") int currentPage,
-                                            @RequestParam(value = "user-id") int userId){
-        return null;
-    }
+//    public PostPagination getAllPostsOfUser(@RequestParam(value = "page", defaultValue = "1") int currentPage,
+//                                            @RequestParam(value = "user-id") int userId){
+//        return null;
+//    }
 
     @PostMapping(value = "/post", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Object> createPost(@Valid @ModelAttribute PostForm postReq,
                                              OAuth2Authentication auth,
                                              BindingResult result){
-        //validate post?? tai sao khong return lai error???
         if(result.hasErrors()){
             Map<String, String> errors = new HashMap<>();
             result.getAllErrors().forEach((error) -> {
@@ -91,7 +94,8 @@ public class PostController {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
 
-        Post newPost = new Post();
+//        Post newPost = new Post();
+        Post newPost = applicationContext.getBean(Post.class);
         //tao post
         newPost.setContent(postReq.getContent());
         newPost.setCreatedDate(postReq.getCreatedDate());
@@ -117,7 +121,8 @@ public class PostController {
     @PostMapping(value = "/post/create-post-auction", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
     public Post createPostAuction(@Valid @ModelAttribute PostForm postReq, OAuth2Authentication auth){
-        Post newPost = new Post();
+//        Post newPost = new Post();
+        Post newPost = applicationContext.getBean(Post.class);
         //create post
         newPost.setContent(postReq.getContent());
         newPost.setCreatedDate(postReq.getCreatedDate());
@@ -136,6 +141,7 @@ public class PostController {
         newPost.setOwnerPost(ownerPost);
 
         //tao post Auction
+        PostAuction postAuction = applicationContext.getBean(PostAuction.class);
         postAuction.setPost(newPost);
 //        postAuctionService.createPostAuction(postAuction);
         postAuctionService.createNewPostAuction(postAuction);
@@ -145,16 +151,16 @@ public class PostController {
 
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<Object> deletePost(@PathVariable(value = "postId") Integer postId, OAuth2Authentication auth){
-        //kt lieu user co phai la admin va owner cua tai khoan
-        Post createdPost = postService.getPost(postId);
-        if(!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) &&
-                !createdPost.getOwnerPost().getUsername().equals(auth.getName())){
-            Map<String, String> msg = new HashMap<>();
-            msg.put("error","this username does not have permission to update user profile");
-            return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
-        }
-        //delete post
         try {
+            //kt lieu user co phai la admin va owner cua tai khoan
+            Post createdPost = postService.getPost(postId);
+            if(!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) &&
+                    !createdPost.getOwnerPost().getUsername().equals(auth.getName())){
+                Map<String, String> msg = new HashMap<>();
+                msg.put("error","this username does not have permission to delete post");
+                return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+            }
+            //delete post
             postService.deletePost(postId);
         }
         catch (NoSuchElementException ex){
@@ -177,7 +183,7 @@ public class PostController {
             if(!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) &&
                     !createdPost.getOwnerPost().getUsername().equals(auth.getName())){
                 Map<String, String> msg = new HashMap<>();
-                msg.put("error","this username does not have permission to update user profile");
+                msg.put("error","this username does not have permission to update post");
                 return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
             }
 
@@ -213,18 +219,18 @@ public class PostController {
     }
 
     //show comments
-    @GetMapping("/post/{postId}/show-comments")
-    public ResponseEntity<Object> showComments(@PathVariable(value = "postId") Integer postId){
-        try{
-            Post createdPost = postService.getPost(postId);
-            return new ResponseEntity<>(createdPost, HttpStatus.OK);
-        }
-        catch(NoSuchElementException ex){
-            Map<String, String> msg = new HashMap<>();
-            msg.put("error","This post doesn not exist");
-            return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
-        }
-    }
+//    @GetMapping("/post/{postId}/show-comments")
+//    public ResponseEntity<Object> showComments(@PathVariable(value = "postId") Integer postId){
+//        try{
+//            Post createdPost = postService.getPost(postId);
+//            return new ResponseEntity<>(createdPost, HttpStatus.OK);
+//        }
+//        catch(NoSuchElementException ex){
+//            Map<String, String> msg = new HashMap<>();
+//            msg.put("error","This post doesn not exist");
+//            return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     //choose winner => inactive post auciton => send mail to winner
     @GetMapping("/post/{postId}/choose-winner")
@@ -275,11 +281,15 @@ public class PostController {
             return new ResponseEntity<>(msg, HttpStatus.CONFLICT);
         } catch (NoSuchElementException ex){
             Map<String, String> msg = new HashMap<>();
-            msg.put("error","This post doesn not exist");
+            msg.put("error","This post does not exist");
             return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
         } catch (EntityNotFoundException e){
             Map<String, String> msg = new HashMap<>();
-            msg.put("error","This user doesn not exist");
+            msg.put("error","This user does not exist");
+            return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e){
+            Map<String, String> msg = new HashMap<>();
+            msg.put("error","This user does not exist");
             return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
         }
     }

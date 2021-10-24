@@ -21,6 +21,7 @@ public class User implements Serializable {
     private Integer userId;
 
     @Column(unique = true, nullable = false)
+    @NotEmpty(message = "Username is required")
     private String username;
 
     @NotEmpty(message = "Password is required")
@@ -92,6 +93,7 @@ public class User implements Serializable {
         this.username = username;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

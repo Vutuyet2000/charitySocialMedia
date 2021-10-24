@@ -76,13 +76,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable();
         http.anonymous().disable().cors().and()
                 .authorizeRequests()
+                .antMatchers( "/oauth/**","/sign-up/**").permitAll()
                 .antMatchers("/users/**").authenticated()
                 .antMatchers("/posts/**").authenticated()
                 .antMatchers("/post/**").authenticated()
                 .antMatchers("/post-auction/**").authenticated()
                 .antMatchers("/likes/**").authenticated()
                 .antMatchers("/comments/**").authenticated()
-               .antMatchers( "/oauth/**","/sign-up").permitAll()
+                .antMatchers("/statistics").access("hasRole('ROLE_ADMIN')")
                 .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 //                .and()
 //                .addFilterBefore(new OauthCorsFilter(), AbstractPreAuthenticatedProcessingFilter.class);

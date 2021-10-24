@@ -3,6 +3,7 @@ package com.tuyet.charity.config;
 import com.tuyet.charity.pojo.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class BeanConfig {
@@ -13,12 +14,14 @@ public class BeanConfig {
     }
 
     @Bean
+    @Scope("prototype")
     public PostAuction createNewPostAuction(){
         PostAuction postAuction = new PostAuction();
         return postAuction;
     }
 
     @Bean
+    @Scope("prototype")
     public Post createNewPost(){
         Post post = new Post();
         return post;
@@ -31,6 +34,7 @@ public class BeanConfig {
     }
 
     @Bean
+    @Scope("prototype")
     public Notification createNewNotification(){
         Notification notification = new Notification();
         return notification;

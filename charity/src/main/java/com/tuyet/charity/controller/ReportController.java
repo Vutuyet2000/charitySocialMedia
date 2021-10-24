@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 public class ReportController {
@@ -36,25 +38,27 @@ public class ReportController {
     @Autowired
     private JavaMailSender emailSender;
 
-    @GetMapping("/report")
-    public List<Report> getAllReports(){
-        return reportService.getAllReports();
-    }
+//    @GetMapping("/report")
+//    public List<Report> getAllReports(){
+//        return reportService.getAllReports();
+//    }
 
     @PostMapping("/report/{reportedUserId}")
-    public ResponseEntity<Object> createReport(@Valid @RequestBody Report report, @PathVariable Integer reportedUserId,OAuth2Authentication auth){
+    public ResponseEntity<Object> createReport(@Valid @RequestBody Report report, @PathVariable Integer reportedUserId
+            , OAuth2Authentication auth){
         User reporter = userDetailsService.getUserByUsername(auth.getName());
         //reporterId != reportedUserId
-        if(reporter.getUserId()==reportedUserId){
+        if (reporter.getUserId() == reportedUserId) {
             Map<String, String> msg = new HashMap<>();
-            msg.put("error","users cannot report themselves");
+            msg.put("error", "users cannot report themselves");
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }
+
         User reportedUser = userDetailsService.getUserById(reportedUserId);
         //kt reportedUser co ton tai hay khong
-        if(reportedUser == null){
+        if (reportedUser == null) {
             Map<String, String> msg = new HashMap<>();
-            msg.put("error","this user does not exist");
+            msg.put("error", "this user does not exist");
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }
 

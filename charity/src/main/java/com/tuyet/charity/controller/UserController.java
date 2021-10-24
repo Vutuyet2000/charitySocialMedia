@@ -41,22 +41,22 @@ public class UserController {
     //multipart user
     @PostMapping(value = "/sign-up", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> createUser(@ModelAttribute UserForm user){
+    public ResponseEntity<Object> createUser(@Valid @ModelAttribute UserForm user, BindingResult result){
         try {
             //validate user
-//            if(result.hasErrors()){
-//                Map<String, String> errors = new HashMap<>();
-//                result.getAllErrors().forEach((error) -> {
-//                    String fieldName = ((FieldError) error).getField();
-//                    String errorMessage = error.getDefaultMessage();
-//                    errors.put(fieldName, errorMessage);
-//                });
-//                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-//            }
-            // username, pass ko null
-            if(user.getPassword() == null || user.getUsername() == null){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            if(result.hasErrors()){
+                Map<String, String> errors = new HashMap<>();
+                result.getAllErrors().forEach((error) -> {
+                    String fieldName = ((FieldError) error).getField();
+                    String errorMessage = error.getDefaultMessage();
+                    errors.put(fieldName, errorMessage);
+                });
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             }
+            // username, pass ko null
+//            if(user.getPassword() == null || user.getUsername() == null){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
             //kt khong trung username
             User createdUsername = userDetailsService.getUserByUsername(user.getUsername());
             if(createdUsername != null){
@@ -85,8 +85,19 @@ public class UserController {
     }
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Integer id, @ModelAttribute UserForm user,
+    public ResponseEntity<Object> updateUser(@PathVariable Integer id, @Valid @ModelAttribute UserForm user,
                                              BindingResult result, OAuth2Authentication auth){
+        //validate user
+        if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getAllErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+
         //kt lieu user co phai la admin va owner cua tai khoan
         User ownerProfile = userDetailsService.getUserByUsername(auth.getName());
         if(!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) && ownerProfile.getUserId() != id){

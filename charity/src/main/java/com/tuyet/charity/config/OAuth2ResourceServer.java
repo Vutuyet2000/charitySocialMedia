@@ -41,18 +41,23 @@ public class OAuth2ResourceServer extends ResourceServerConfigurerAdapter {
 //        return source;
 //    }
 
-//    @Override
-//    public void configure(HttpSecurity http) throws Exception {
-////        http.cors().and().csrf().disable();
-////        http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable();
-//        http.anonymous().disable()
-//            .authorizeRequests()
-//            .antMatchers("/users/**").authenticated()
-//                .antMatchers("/posts/**").authenticated()
-//                .antMatchers("/post/**").authenticated()
-//                .antMatchers("/likes/**").authenticated()
-//                .antMatchers("/comments/**").authenticated()
-//                .antMatchers(HttpMethod.OPTIONS, "/oauth/token","/sign-up").permitAll()
-//            .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
-//    }
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+//        http.cors().and().csrf().disable();
+//        http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable();
+        http.anonymous().disable()
+                .authorizeRequests()
+                .antMatchers("/users/**").authenticated()
+                .antMatchers("/update-user/**").authenticated()
+                .antMatchers("/posts/**").authenticated()
+                .antMatchers("/post/**").authenticated()
+                .antMatchers("/post-auction/**").authenticated()
+                .antMatchers("/likes/**").authenticated()
+                .antMatchers("/comments/**").authenticated()
+                .antMatchers("/report/**").authenticated()
+                .antMatchers("/notifications/**").authenticated()
+                .antMatchers( "/oauth/**","/sign-up").permitAll()
+                .antMatchers("/statistics").access("hasRole('ROLE_ADMIN')")
+                .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+    }
 }

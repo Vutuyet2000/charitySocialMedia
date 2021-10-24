@@ -12,16 +12,19 @@ import com.tuyet.charity.service.PostService;
 import com.tuyet.charity.service.UserService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 public class LikeController {
@@ -41,16 +44,20 @@ public class LikeController {
     private Like like;
 
     @Autowired
-    private Notification notification;
+    private ApplicationContext applicationContext;
 
-    @GetMapping("/likes")
-    public List<Like> getAllLikesPost(@RequestParam("post-id") Integer postId){
-        return likeService.getAllLikesPost(postId);
-    }
+//    @Autowired
+//    private Notification notification;
+
+//    @GetMapping("/likes")
+//    public List<Like> getAllLikesPost(@RequestParam("post-id") Integer postId){
+//        return likeService.getAllLikesPost(postId);
+//    }
 
     //tao like khi user like post
     @PostMapping("/likes")
     public ResponseEntity<Object> createPostLike(@RequestParam(value = "post-id", defaultValue = "0") Integer postId, OAuth2Authentication auth){
+//        Like like = applicationContext.getBean(Like.class);
         //kt post id co duoc truyen
         if(postId == 0){
             Map<String, String> msg = new HashMap<>();
@@ -67,6 +74,7 @@ public class LikeController {
 
             likeService.createLike(like);
 
+            Notification notification = applicationContext.getBean(Notification.class);
             //tao notification, neu owner post like bai viet cua chinh minh thi khong tao notification
             if(!auth.getName().equals(post.getOwnerPost().getUsername())){
                 notification.setPost(post);
@@ -80,6 +88,10 @@ public class LikeController {
             Map<String, String> msg = new HashMap<>();
             msg.put("error","this object does not exist");
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+        }catch (NoSuchElementException e){
+            Map<String, String> msg = new HashMap<>();
+            msg.put("error","this post does not exist");
+            return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -87,26 +99,37 @@ public class LikeController {
     @DeleteMapping("/likes")
     public ResponseEntity<Object> deletePostLike(@RequestParam(value = "post-id") Integer postId
             , OAuth2Authentication auth){
-        //lay like cua user id?
-        Post createdPost = postService.getPost(postId);
-        //tim like cua user
-        for(Like ul : createdPost.getLikes()){
-            if(ul.getUser().getUsername().equals(auth.getName())){
-                like.setId(ul.getId());
-                like.setUser(ul.getUser());
-                like.setPost(ul.getPost());
+        try {
+            Post createdPost = postService.getPost(postId);
+
+            //tim like cua user
+            for (Like ul : createdPost.getLikes()) {
+                if (ul.getUser().getUsername().equals(auth.getName())) {
+                    like.setId(ul.getId());
+                    like.setUser(ul.getUser());
+                    like.setPost(ul.getPost());
+                }
             }
-        }
-        //kt lieu user co phai la admin va owner cua like
-        if(!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) &&
-                like.getId()==null){
+            //kt lieu user co phai la owner cua like
+            if(like.getUser()==null){
+                Map<String, String> msg = new HashMap<>();
+                msg.put("error","This user has no permission");
+                return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+            }
+//            if (!auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) &&
+//                    like.getId() == null) {
+//                Map<String, String> msg = new HashMap<>();
+//                msg.put("error", "this username does not have permission to update user profile");
+//                return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+//            }
+            //xoa like
+            likeService.deleteLike(createdPost, like.getId());
+
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (NoSuchElementException e){
             Map<String, String> msg = new HashMap<>();
-            msg.put("error","this username does not have permission to update user profile");
+            msg.put("error","this post does not exist");
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }
-        //xoa like
-        likeService.deleteLike(createdPost, like.getId());
-
-        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
